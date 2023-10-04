@@ -3,8 +3,7 @@ module CesiumIon
     class Export < CesiumIon::Base
 
       Params = Struct.new(
-        :inspection_id,
-        :site_model_id,
+        :prefix,
         :asset_id,
         keyword_init: true
       )
@@ -24,15 +23,14 @@ module CesiumIon
         {
           "type": "S3",
           "bucket": CesiumIon.configuration.bucket,
-          "prefix": "#{Rails.env}/inspection/#{@params.inspection_id}/site_model/#{@params.site_model_id}",
+          "prefix": @params.prefix,
           "accessKeyId": CesiumIon.configuration.access_key_id,
           "secretAccessKey": CesiumIon.configuration.secret_access_key
         }
       end
 
       def validate
-        @errors['site_model_id'] << 'Can\'t be blank' if @params.site_model_id.to_s.empty?
-        @errors['inspection_id'] << 'Can\'t be blank' if @params.inspection_id.to_s.empty?
+        @errors['prefix'] << 'Can\'t be blank' if @params.prefix.to_s.empty?
         @errors['asset_id'] << 'Can\'t be blank' if @params.asset_id.to_s.empty?
       end
 
