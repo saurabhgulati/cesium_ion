@@ -8,6 +8,7 @@ module CesiumIon
       Params = Struct.new(
         :response_data,
         :input_file,
+        :filename,
         keyword_init: true
       )
 
@@ -36,7 +37,7 @@ module CesiumIon
         file = File.open(@params.input_file)
 
         bucket = s3.bucket(location[:bucket])
-        s3_object = bucket.object("#{location[:prefix]}" + file.filename)
+        s3_object = bucket.object("#{location[:prefix]}" + @params.filename)
 
         # Uploading the file on S3
         s3_object.upload_file(file)
@@ -49,6 +50,7 @@ module CesiumIon
       def validate
         @errors['response_data'] << 'Can\'t be blank' if @params.response_data.to_s.empty?
         @errors['input_file'] << 'Can\'t be blank' if @params.input_file.to_s.empty?
+        @errors['filename'] << 'Can\'t be blank' if @params.filename.to_s.empty?
       end
 
       def location
